@@ -251,7 +251,7 @@ class electronic_invoice_fields(models.Model):
 		for record in self:
 			invoice_number = record.name
 			monto_sin_impuesto = record.amount_untaxed
-			monto_impuestos = record.amount_by_group
+			grupo_monto_impuestos = record.amount_by_group
 			monto_total_factura = record.amount_total
 			user_name = record.partner_id.name
 			user_email = record.partner_id.email
@@ -303,7 +303,7 @@ class electronic_invoice_fields(models.Model):
 		clienteDict = self.set_cliente_dict(user_name, user_email)
 		# get the subtotales dict
 		subTotalesDict = self.set_subtotales_dict(
-			monto_sin_impuesto, monto_total_factura, cantidad_items)
+			monto_sin_impuesto, monto_total_factura, cantidad_items, grupo_monto_impuestos)
 
 		datos = dict(
 			tokenEmpresa=tokenEmpresa,
@@ -814,7 +814,8 @@ class electronic_invoice_fields(models.Model):
 
 		return client_obj
 
-	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items):
+	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,grupo_monto_impuestos):
+		logging.info('Monto de Impuestos: ' + str(grupo_monto_impuestos))
 		subTotalesDict = {}
 		subTotalesDict['totalPrecioNeto'] = str('%.2f' % round(monto_sin_impuesto, 2))
 		subTotalesDict['totalITBMS'] = str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
