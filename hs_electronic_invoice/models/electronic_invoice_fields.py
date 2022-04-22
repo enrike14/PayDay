@@ -732,8 +732,8 @@ class electronic_invoice_fields(models.Model):
 					'cantGTINComInv' : str("")
 					}
 				if item.product_id.categoryProduct=='Materia prima Farmacéutica' or item.product_id.categoryProduct=='Medicina' or item.product_id.categoryProduct=='Alimento':
-					new_item_object['fechaFabricacion'] =  str(item.product_id.fechaFabricacion.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
-					new_item_object['fechaCaducidad'] = str(item.product_id.fechaCaducidad.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
+					new_item_object['fechaFabricacion'] =  str(item.product_id.fechaFabricacion.strftime("%Y-%m-%d"))
+					new_item_object['fechaCaducidad'] = str(item.product_id.fechaCaducidad.strftime("%Y-%m-%d"))
 					
 				if typeCustomers=="03":
 					new_item_object["CodigoCPBS"]=str(item.product_id.codigoCPBS)
