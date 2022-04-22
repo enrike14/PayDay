@@ -717,30 +717,49 @@ class electronic_invoice_fields(models.Model):
 				else:
 					tasaITBMS = "00"
 					monto_porcentaje = 0
-
-				new_item_object = {}
-				new_item_object['descripcion'] = str(item.name)
-				new_item_object['cantidad'] = str(
-					'%.2f' % round(item.quantity, 2))
-				new_item_object['precioUnitario'] = str(
-					'%.2f' % round(item.price_unit, 2))
-				new_item_object['precioItem'] = str(
-					'%.2f' % round((item.quantity * item.price_unit), 2))
-				new_item_object['valorTotal'] = str('%.2f' % round(
-					(((item.quantity * item.price_unit) + ((item.price_subtotal * monto_porcentaje)/100)) - item.discount), 2))
-				new_item_object['codigoGTIN'] = str("")
-				new_item_object['cantGTINCom'] = str("")
-				new_item_object['codigoGTINInv'] = str(
-					item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else ''
-				new_item_object['tasaITBMS'] = str(tasaITBMS)
-				new_item_object['valorITBMS'] = str('%.2f' % round(
-					(item.price_subtotal * monto_porcentaje)/100, 2))
-				new_item_object['cantGTINComInv'] = str("")
-				if item.product_id.categoryProduct == 'Materia prima Farmacéutica' or item.product_id.categoryProduct == 'Medicina' or item.product_id.categoryProduct == 'Alimento':
-					new_item_object['fechaFabricacion'] = str(
-						item.fechaFabricacion.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
-					new_item_object['fechaCaducidad'] = str(
-						item.fechaCaducidad.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
+				new_item_object = {
+					'descripcion' : str(item.product_id.name),
+					'cantidad' : str('%.2f' % round(item.quantity, 2)),
+					'precioUnitario' : str('%.2f' % round(item.price_unit, 2)),
+					'precioItem' : str('%.2f' % round((item.quantity * item.price_unit), 2)),
+					'valorTotal' : str('%.2f' % round((((item.quantity * item.price_unit) + ((item.price_unit * monto_porcentaje)/100)) - item.discount), 2)),
+					'codigoGTIN' : str(""),
+					'cantGTINCom' : str(""),
+					#'codigoGTINInv' : "",
+					'codigoGTINInv' : str(item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else '',
+					'tasaITBMS' : str(tasaITBMS),
+					'valorITBMS' : str('%.2f' % round((item.price_unit * monto_porcentaje)/100, 2)),
+					'cantGTINComInv' : str("")
+					}
+				if item.product_id.categoryProduct=='Materia prima Farmacéutica' or item.product_id.categoryProduct=='Medicina' or item.product_id.categoryProduct=='Alimento':
+					new_item_object['fechaFabricacion'] =  str(item.product_id.fechaFabricacion.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
+					new_item_object['fechaCaducidad'] = str(item.product_id.fechaCaducidad.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
+					
+				if typeCustomers=="03":
+					new_item_object["CodigoCPBS"]=str(item.product_id.codigoCPBS)
+				# new_item_object = {}
+				# new_item_object['descripcion'] = str(item.name)
+				# new_item_object['cantidad'] = str(
+				# 	'%.2f' % round(item.quantity, 2))
+				# new_item_object['precioUnitario'] = str(
+				# 	'%.2f' % round(item.price_unit, 2))
+				# new_item_object['precioItem'] = str(
+				# 	'%.2f' % round((item.quantity * item.price_unit), 2))
+				# new_item_object['valorTotal'] = str('%.2f' % round(
+				# 	(((item.quantity * item.price_unit) + ((item.price_subtotal * monto_porcentaje)/100)) - item.discount), 2))
+				# new_item_object['codigoGTIN'] = str("")
+				# new_item_object['cantGTINCom'] = str("")
+				# new_item_object['codigoGTINInv'] = str(
+				# 	item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else ''
+				# new_item_object['tasaITBMS'] = str(tasaITBMS)
+				# new_item_object['valorITBMS'] = str('%.2f' % round(
+				# 	(item.price_subtotal * monto_porcentaje)/100, 2))
+				# new_item_object['cantGTINComInv'] = str("")
+				# if item.product_id.categoryProduct == 'Materia prima Farmacéutica' or item.product_id.categoryProduct == 'Medicina' or item.product_id.categoryProduct == 'Alimento':
+				# 	new_item_object['fechaFabricacion'] = str(
+				# 		item.fechaFabricacion.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
+				# 	new_item_object['fechaCaducidad'] = str(
+				# 		item.fechaCaducidad.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
 
 				# if typeCustomers=="03":
 				# 	new_item_object["CodigoCPBS"]=item.product_id.codigoCPBS
