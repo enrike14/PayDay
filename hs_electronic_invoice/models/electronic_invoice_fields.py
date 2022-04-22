@@ -702,17 +702,17 @@ class electronic_invoice_fields(models.Model):
 							# logging.info("Children taxes:" + str(group_tax_children))
 							obj_sub_impuestos = self.get_taxes_in_group(group_tax_children)
 							logging.info("array subimpuestos: " + str(obj_sub_impuestos))
-							monto_porcentaje = obj_sub_impuestos.itbmPercent
-							if int(obj_sub_impuestos.itbmPercent) == 0:
+							monto_porcentaje = obj_sub_impuestos['itbmPercent']
+							if int(obj_sub_impuestos['itbmPercent']) == 0:
 								tasaITBMS = "00"
 								# logging.info("Tasa ITBMS 0= "+ str(tasaITBMS))
-							if int(obj_sub_impuestos.itbmPercent) == 15:
+							if int(obj_sub_impuestos['itbmPercent']) == 15:
 								tasaITBMS = "03" 
 
-							if int(obj_sub_impuestos.itbmPercent) == 10:
+							if int(obj_sub_impuestos['itbmPercent']) == 10:
 								tasaITBMS = "02" 
 							
-							if int(obj_sub_impuestos.itbmPercent) == 7:
+							if int(obj_sub_impuestos['itbmPercent']) == 7:
 								tasaITBMS = "01"
 				else:
 					tasaITBMS = "00"
