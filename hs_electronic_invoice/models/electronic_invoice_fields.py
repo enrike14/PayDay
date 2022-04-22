@@ -689,30 +689,30 @@ class electronic_invoice_fields(models.Model):
 							if int(tax_item.amount) == 7:
 								tasaITBMS = "01"
 						elif tax_item.amount_type == 'group':
-							logging.info("tax_item.amount_type.children:" + str(tax_item.children_tax_ids))
+							# logging.info("tax_item.amount_type.children:" + str(tax_item.children_tax_ids))
 							ctax_ids_str = str(tax_item.children_tax_ids).replace("account.tax","").replace("(","").replace(")","") #.replace(",","")
-							logging.info("children tuple ids str:" + str(ctax_ids_str))
+							# logging.info("children tuple ids str:" + str(ctax_ids_str))
 							if len(ctax_ids_str)>1:
 								ctuple_tax_ids_str = tuple(map(int, ctax_ids_str.split(', '))) 
 							else:
 								ctuple_tax_ids_str = tuple(map(int, ctax_ids_str.replace(",","").split(', ')))
-							
-							logging.info("children tuple ids:" + str(ctuple_tax_ids_str))
+
+							# logging.info("children tuple ids:" + str(ctuple_tax_ids_str))
 							group_tax_children = self.env["account.tax"].search([('id','in',ctuple_tax_ids_str)])
-							logging.info("Children taxes:" + str(group_tax_children))
-							object_impuestos = self.get_taxes_in_group(group_tax_children)
-							logging.info("array subimpuestos" + str(object_impuestos))
-							monto_porcentaje = object_impuestos.itbmPercent
-							if int(object_impuestos.itbmPercent) == 0:
+							# logging.info("Children taxes:" + str(group_tax_children))
+							obj_sub_impuestos = self.get_taxes_in_group(group_tax_children)
+							logging.info("array subimpuestos: " + str(obj_sub_impuestos))
+							monto_porcentaje = obj_sub_impuestos.itbmPercent
+							if int(obj_sub_impuestos.itbmPercent) == 0:
 								tasaITBMS = "00"
 								# logging.info("Tasa ITBMS 0= "+ str(tasaITBMS))
-							if int(object_impuestos.itbmPercent) == 15:
+							if int(obj_sub_impuestos.itbmPercent) == 15:
 								tasaITBMS = "03" 
 
-							if int(object_impuestos.itbmPercent) == 10:
+							if int(obj_sub_impuestos.itbmPercent) == 10:
 								tasaITBMS = "02" 
 							
-							if int(object_impuestos.itbmPercent) == 7:
+							if int(obj_sub_impuestos.itbmPercent) == 7:
 								tasaITBMS = "01"
 				else:
 					tasaITBMS = "00"
