@@ -637,10 +637,15 @@ class electronic_invoice_fields(models.Model):
 		})
 
 	def get_taxes_in_group(self, group_children_taxes):
-		items = []
+		items = {}
 		for item in group_children_taxes:
 			logging.info("Tax ID:" + str(item))
-			items.append(item.amount)
+			if "retención" in str(item.name).lower() or "retención" in str(item.name).lower():
+				items['itbmRetencion'] = item.amount
+			
+			if "7" in str(item.name).lower():
+				items['itbmPercent'] = item.amount
+			# items.append(item.amount)
 
 		return items
 
@@ -696,8 +701,8 @@ class electronic_invoice_fields(models.Model):
 							logging.info("children tuple ids:" + str(ctuple_tax_ids_str))
 							group_tax_children = self.env["account.tax"].search([('id','in',ctuple_tax_ids_str)])
 							logging.info("Children taxes:" + str(group_tax_children))
-							array_impuestos = self.get_taxes_in_group(group_tax_children)
-							logging.info("array subimpuestos" + str(array_impuestos))
+							object_impuestos = self.get_taxes_in_group(group_tax_children)
+							logging.info("array subimpuestos" + str(object_impuestos))
 				else:
 					tasaITBMS = "00"
 					monto_porcentaje = 0
