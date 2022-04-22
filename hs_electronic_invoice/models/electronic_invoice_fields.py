@@ -639,11 +639,10 @@ class electronic_invoice_fields(models.Model):
 	def get_taxes_in_group(self, group_children_taxes):
 		items = {}
 		for item in group_children_taxes:
-			logging.info("Tax ID:" + str(item))
 			if "retención" in str(item.name).lower() or "retención" in str(item.name).lower():
 				items['itbmRetencion'] = item.amount
 			
-			if "7" in str(item.name).lower():
+			if "7" in str(item.name).lower() or "10" in str(item.name).lower() or "15" in str(item.name).lower():
 				items['itbmPercent'] = item.amount
 			# items.append(item.amount)
 
@@ -653,7 +652,7 @@ class electronic_invoice_fields(models.Model):
 	def set_array_item_object(self, invoice_items):
 		typeCustomers = self.partner_id.TipoClienteFE
 		tasaITBMS = 'asas'
-		monto_porcentaje='0'
+		monto_porcentaje=0.0
 		array_items = []
 		if invoice_items:
 			for item in invoice_items:
@@ -703,6 +702,18 @@ class electronic_invoice_fields(models.Model):
 							logging.info("Children taxes:" + str(group_tax_children))
 							object_impuestos = self.get_taxes_in_group(group_tax_children)
 							logging.info("array subimpuestos" + str(object_impuestos))
+							monto_porcentaje = object_impuestos.itbmPercent
+							if int(object_impuestos.itbmPercent) == 0:
+								tasaITBMS = "00"
+								# logging.info("Tasa ITBMS 0= "+ str(tasaITBMS))
+							if int(object_impuestos.itbmPercent) == 15:
+								tasaITBMS = "03" 
+
+							if int(object_impuestos.itbmPercent) == 10:
+								tasaITBMS = "02" 
+							
+							if int(object_impuestos.itbmPercent) == 7:
+								tasaITBMS = "01"
 				else:
 					tasaITBMS = "00"
 					monto_porcentaje = 0
