@@ -828,7 +828,7 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict['tiempoPago'] = "1"
 		subTotalesDict['nroItems'] = str(cantidad_items)
 		subTotalesDict['totalTodosItems'] = str('%.2f' % round(monto_total_factura, 2))
-		subTotalesDict['codigoRetencion'] = 2  #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['codigoRetencion'] = "2"  #str('%.2f' % round(monto_total_factura, 2))
 		subTotalesDict['totalTodosItems'] =  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))#str('%.2f' % round(monto_total_factura, 2))
 
 		return subTotalesDict
