@@ -816,22 +816,19 @@ class electronic_invoice_fields(models.Model):
 
 	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items):
 		subTotalesDict = {}
-		subTotalesDict['totalPrecioNeto'] = str(
-			'%.2f' % round(monto_sin_impuesto, 2))
-		subTotalesDict['totalITBMS'] = str('%.2f' % round(
-			(monto_total_factura - monto_sin_impuesto), 2))
-		subTotalesDict['totalMontoGravado'] = str(
-			'%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+		subTotalesDict['totalPrecioNeto'] = str('%.2f' % round(monto_sin_impuesto, 2))
+		subTotalesDict['totalITBMS'] = str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+		subTotalesDict['totalMontoGravado'] = str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
 		subTotalesDict['totalDescuento'] = ""
 		subTotalesDict['totalAcarreoCobrado'] = ""
 		subTotalesDict['valorSeguroCobrado'] = ""
-		subTotalesDict['totalFactura'] = str(
-			'%.2f' % round(monto_total_factura, 2))
-		subTotalesDict['totalValorRecibido'] = str(
-			'%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalFactura'] = str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalValorRecibido'] = str('%.2f' % round(monto_total_factura, 2))
 		subTotalesDict['vuelto'] = "0.00"
 		subTotalesDict['tiempoPago'] = "1"
 		subTotalesDict['nroItems'] = str(cantidad_items)
-		subTotalesDict['totalTodosItems'] = str(
-			'%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalTodosItems'] = str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['codigoRetencion'] = 2  #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalTodosItems'] =  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))#str('%.2f' % round(monto_total_factura, 2))
+
 		return subTotalesDict
