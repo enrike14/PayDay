@@ -858,6 +858,6 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict['totalTodosItems'] = str('%.2f' % round((monto_sin_impuesto + monto_impuesto_completo), 2)) #str('%.2f' % round(monto_total_factura, 2))
 
 		if(self.total_precio_descuento > 0):
-			subTotalesDict['totalDescuento'] = str(self.total_precio_descuento)
+			subTotalesDict['totalDescuento'] = str('%.2f' % round(self.total_precio_descuento, 2))
 		
 		return subTotalesDict
