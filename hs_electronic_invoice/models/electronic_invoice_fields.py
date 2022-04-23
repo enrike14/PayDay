@@ -835,7 +835,8 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict = {}
 		subTotalesDict['totalPrecioNeto'] = str('%.2f' % round(monto_sin_impuesto, 2))
 		subTotalesDict['totalITBMS'] = str('%.2f' % round(monto_impuesto_completo, 2)) #str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
-		subTotalesDict['totalMontoGravado'] = str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+		# subTotalesDict['totalISC'] = #Suma de todas las ocurrencias de ValorISC.
+		subTotalesDict['totalMontoGravado'] = str('%.2f' % round(monto_impuesto_completo, 2)) #sumar TotalISC
 		subTotalesDict['totalDescuento'] = ""
 		subTotalesDict['totalAcarreoCobrado'] = ""
 		subTotalesDict['valorSeguroCobrado'] = ""
