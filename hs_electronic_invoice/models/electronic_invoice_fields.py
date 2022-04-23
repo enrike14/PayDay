@@ -157,7 +157,7 @@ class electronic_invoice_fields(models.Model):
 	anulado = fields.Char(string='Anulado', readonly="True", store="True")
 	nota_credito = fields.Char(
 		string='Nota de Crédito', readonly="True", compute="on_change_type",)
-
+	total_precio_descuento = 0.0
 	@api.depends('qr_code')
 	def on_change_pago(self):
 		for record in self:
@@ -247,7 +247,7 @@ class electronic_invoice_fields(models.Model):
 		lines_ids = ()
 		info_pagos = []
 		url_wsdl = ''
-
+		
 		for record in self:
 			invoice_number = record.name
 			monto_sin_impuesto = record.amount_untaxed
@@ -732,18 +732,20 @@ class electronic_invoice_fields(models.Model):
 					tasaITBMS = "00"
 					monto_porcentaje = 0
 
-				logging.info("Descuento:"+ str(item.discount))
-				precioDescuento = '0'
+				
+				
 				if item.discount > 0:
 					precioDescuento = str((float(item.price_unit) * float(item.discount)) / 100)
 
+				logging.info("Descuento:"+ str(precioDescuento))
+				self.total_precio_descuento += float(precioDescuento)
 
 				new_item_object = {}
 				new_item_object['descripcion'] = str(item.name)
 				new_item_object['cantidad'] = str(
 					'%.2f' % round(item.quantity, 2))
 				new_item_object['precioUnitario'] = str('%.2f' % round(item.price_unit, 2))
-				new_item_object['precioUnitarioDescuento'] = precioDescuento
+				new_item_object['precioUnitarioDescuento'] = str(item.price_unit - float(precioDescuento))
 				new_item_object['precioItem'] = str('%.2f' % round((item.quantity * (item.price_unit - float(precioDescuento))), 2))
 				new_item_object['valorTotal'] = str('%.2f' % round((((item.quantity * (item.price_unit - float(precioDescuento))) + ((item.price_subtotal * monto_porcentaje)/100))), 2))
 				new_item_object['codigoGTIN'] = str("")
@@ -835,9 +837,9 @@ class electronic_invoice_fields(models.Model):
 	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array):
 		logging.info("Array items: " + str(info_items_array))
 
-		total_descuento = 0.0
-		for item in info_items_array:
-			total_descuento += float(item['precioUnitarioDescuento'])
+		# total_descuento = 0.0
+		# for item in info_items_array:
+		# 	total_descuento += float(item['precioUnitarioDescuento'])
 
 
 		subTotalesDict = {}
@@ -855,7 +857,7 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict['nroItems'] = str(cantidad_items)
 		subTotalesDict['totalTodosItems'] = str('%.2f' % round((monto_sin_impuesto + monto_impuesto_completo), 2)) #str('%.2f' % round(monto_total_factura, 2))
 
-		if(total_descuento > 0):
-			subTotalesDict['totalDescuento'] = total_descuento
+		if(self.total_precio_descuento > 0):
+			subTotalesDict['totalDescuento'] = self.total_precio_descuento
 		
 		return subTotalesDict
