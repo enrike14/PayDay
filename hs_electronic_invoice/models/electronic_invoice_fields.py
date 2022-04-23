@@ -306,13 +306,22 @@ class electronic_invoice_fields(models.Model):
 		# TODO: send more parameters example: ruc, pais, razon...
 		clienteDict = self.set_cliente_dict(user_name, user_email)
 		# get the subtotales dict
-		subTotalesDict = self.set_subtotales_dict(
-			monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo)
-
+		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo)
+		lista_forma_pago_dict = dict(formaPago=info_pagos),
 		retencion_dict = {
 					'codigoRetencion': "2",
-					'totalTodosItems':  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+					'montoRetencion':  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
 				}
+
+		totales_subtotales_inv_dict = dict(
+			subTotalesDict,
+			lista_forma_pago_dict
+		)
+
+		if(len(grupo_monto_impuestos) > 1):
+			tuple_retencion = grupo_monto_impuestos[1]
+			if(float(tuple_retencion[1]) < 0 == True):
+				totales_subtotales_inv_dict["retencion"] = retencion_dict
 
 
 		datos = dict(
@@ -327,16 +336,7 @@ class electronic_invoice_fields(models.Model):
 					item=info_items_array
 				),
 				# retencion=dict(retencion_dict),
-				totalesSubTotales=dict(
-								subTotalesDict,
-								listaFormaPago=dict(
-									formaPago=info_pagos
-								),
-								retencion = dict(
-									codigoRetencion= "2",
-									montoRetencion=  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2)),
-								)
-				)
+				totalesSubTotales=totales_subtotales_inv_dict
 			)
 		)
 		# datos del EBI Completos
