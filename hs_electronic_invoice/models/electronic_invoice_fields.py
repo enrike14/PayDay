@@ -801,8 +801,8 @@ class electronic_invoice_fields(models.Model):
 	def set_cliente_dict(self, user_name, user_email):
 		logging.info('Pais del cliente: ' +
 					str(self.partner_id.country_id.code))
-		tipo_cliente_fe = '02'
-		tipo_contribuyente = 1  # Juridico
+		tipo_cliente_fe = self.partner_id.TipoClienteFE #'02'
+		tipo_contribuyente = self.partner_id.tipoContribuyente #Juridico
 		client_obj = {
 			"tipoClienteFE" : tipo_cliente_fe, #reemplazar por TipoclienteFE desde res.partner
 			"tipoContribuyente": tipo_contribuyente,
@@ -829,6 +829,7 @@ class electronic_invoice_fields(models.Model):
 				client_obj['paisExtranjero'] = self.partner_id.paisExtranjero#'Utilizar nombre completo del país.'
 
 		return client_obj
+
 
 	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo):
 
