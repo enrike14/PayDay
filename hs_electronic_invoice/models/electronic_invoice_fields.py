@@ -834,10 +834,11 @@ class electronic_invoice_fields(models.Model):
 
 
 	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array):
+		logging.info("Array items: " + str(info_items_array))
 
 		total_descuento = 0.0
 		for item in info_items_array:
-			total_descuento += float(item.precioUnitarioDescuento)
+			total_descuento += float(item['precioUnitarioDescuento'])
 
 
 		subTotalesDict = {}
