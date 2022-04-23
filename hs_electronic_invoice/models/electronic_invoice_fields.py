@@ -280,8 +280,12 @@ class electronic_invoice_fields(models.Model):
 		payments_items = self.env["account.payment"].search(
 			[('communication', '=', self.name)])
 		logging.info("Los pagos en v13:" + str(payments_items))
+
+			
+		tuple_impuesto_completo = grupo_monto_impuestos[0]
+		monto_impuesto_completo = tuple_impuesto_completo[1]
 		# get an array to info_pagos
-		info_pagos = self.set_array_info_pagos(payments_items)
+		info_pagos = self.set_array_info_pagos(payments_items, monto_impuesto_completo)
 
 		# constultamos el objeto de nuestra configuración del servicio
 		config_document_obj = self.env["electronic.invoice"].search(
@@ -303,7 +307,7 @@ class electronic_invoice_fields(models.Model):
 		clienteDict = self.set_cliente_dict(user_name, user_email)
 		# get the subtotales dict
 		subTotalesDict = self.set_subtotales_dict(
-			monto_sin_impuesto, monto_total_factura, cantidad_items, grupo_monto_impuestos)
+			monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo)
 
 		retencion_dict = {
 					'codigoRetencion': "2",
@@ -773,7 +777,7 @@ class electronic_invoice_fields(models.Model):
 		logging.info("Product info" + str(array_items))
 		return array_items
 
-	def set_array_info_pagos(self, payments_items):
+	def set_array_info_pagos(self, payments_items, monto_impuesto_completo):
 		array_pagos = []
 		if payments_items:
 			for item in payments_items:
@@ -788,11 +792,12 @@ class electronic_invoice_fields(models.Model):
 			nuevo_diccionario2['formaPagoFact'] = "01"
 			nuevo_diccionario2['descFormaPago'] = ""
 			nuevo_diccionario2['valorCuotaPagada'] = str(
-				'%.2f' % round(float(self.amount_total), 2))
+				'%.2f' % round(float(self.amount_untaxed + monto_impuesto_completo), 2))
 			array_pagos.append(nuevo_diccionario2)
 
 		logging.info('Montos de Pagos: ' + str(array_pagos))
 		return array_pagos
+
 
 	def set_cliente_dict(self, user_name, user_email):
 		logging.info('Pais del cliente: ' +
@@ -826,11 +831,8 @@ class electronic_invoice_fields(models.Model):
 
 		return client_obj
 
-	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,grupo_monto_impuestos):
-		logging.info('Monto de Impuestos: ' + str(grupo_monto_impuestos))
+	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo):
 
-		tuple_impuesto_completo = grupo_monto_impuestos[0]
-		monto_impuesto_completo = tuple_impuesto_completo[1]
 
 		subTotalesDict = {}
 		subTotalesDict['totalPrecioNeto'] = str('%.2f' % round(monto_sin_impuesto, 2))
