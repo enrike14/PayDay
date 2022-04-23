@@ -322,12 +322,14 @@ class electronic_invoice_fields(models.Model):
 			if(float(tuple_retencion[1]) < 0 == True):
 				totales_subtotales_inv_dict["retencion"] = retencion_dict
 
+
+		logging.info("Total =" + str('%.2f' % round(self.total_precio_descuento, 2)))
+		descuentoBonificacion_dict = [{
+			'DescDescuento': "Descuentos aplicados a los productos",
+			'montoDescuento':str('%.2f' % round(self.total_precio_descuento, 2))
+		}]
+		
 		if(self.total_precio_descuento > 0):
-			logging.info("Total =" + str('%.2f' % round(self.total_precio_descuento, 2)))
-			descuentoBonificacion_dict = [{
-				'DescDescuento': "Descuentos aplicados a los productos",
-				'montoDescuento':str('%.2f' % round(self.total_precio_descuento, 2))
-			}]
 			totales_subtotales_inv_dict["listaDescBonificacion"] = descuentoBonificacion_dict
 
 
