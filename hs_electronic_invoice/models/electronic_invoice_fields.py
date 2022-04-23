@@ -327,7 +327,7 @@ class electronic_invoice_fields(models.Model):
 				'descDescuento': "Descuentos",
 				'montoDescuento':str('%.2f' % round(self.total_precio_descuento, 2))
 			}
-			totales_subtotales_inv_dict["descuentoBonificacion"] = descuentoBonificacion_dict
+			totales_subtotales_inv_dict["listaDescBonificacion"] = descuentoBonificacion_dict
 
 
 		datos = dict(
