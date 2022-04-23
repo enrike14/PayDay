@@ -330,7 +330,7 @@ class electronic_invoice_fields(models.Model):
 								),
 								retencion = dict(
 									codigoRetencion= "2",
-									totalTodosItems=  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2)),
+									montoRetencion=  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2)),
 								)
 				)
 			)
