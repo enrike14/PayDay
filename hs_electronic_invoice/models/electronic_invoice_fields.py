@@ -315,7 +315,7 @@ class electronic_invoice_fields(models.Model):
 
 		totales_subtotales_inv_dict = dict(
 			subTotalesDict,
-			lista_forma_pago_dict
+			listaFormaPago=lista_forma_pago_dict
 		)
 
 		if(len(grupo_monto_impuestos) > 1):
@@ -335,7 +335,6 @@ class electronic_invoice_fields(models.Model):
 				listaItems=dict(
 					item=info_items_array
 				),
-				# retencion=dict(retencion_dict),
 				totalesSubTotales=totales_subtotales_inv_dict
 			)
 		)
