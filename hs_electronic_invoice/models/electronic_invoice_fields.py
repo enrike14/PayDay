@@ -330,7 +330,7 @@ class electronic_invoice_fields(models.Model):
 		)
 
 		if(self.total_precio_descuento > 0):
-			totales_subtotales_inv_dict["descuentoBonificacion"] = descuentoBonificacion_dict
+			totales_subtotales_inv_dict["listaDescBonificacion"] = [descuentoBonificacion_dict]
 
 
 		datos = dict(
