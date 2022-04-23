@@ -743,7 +743,7 @@ class electronic_invoice_fields(models.Model):
 					monto_porcentaje = 0
 
 				
-				
+				precioDescuento = '0'
 				if item.discount > 0:
 					precioDescuento = str((float(item.price_unit) * float(item.discount)) / 100)
 
