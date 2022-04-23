@@ -9,7 +9,7 @@
 	  <field name="arch" type="xml">
 		<xpath expr="//header" position="inside">
 			<button  attrs="{'invisible':['|','|',('state','!=','posted'),('pagadoCompleto','=','FECompletada'),('type','=','in_invoice')]}"   style="border: solid 1px;background: #7c7bad;color: white;" 
-			name="llamar_ebi_pac" string="Crear Documento Fiscal"  type="object" />
+			name="llamar_ebi_pac" string="Crear Documento Fiscal" confirm="¿Seguro que desea Crear el Documento Fiscal?"  type="object" />
 		</xpath>
 
 		<xpath expr="//button[@name='button_draft']" position="attributes" >
