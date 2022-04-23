@@ -745,7 +745,7 @@ class electronic_invoice_fields(models.Model):
 				new_item_object['cantidad'] = str(
 					'%.2f' % round(item.quantity, 2))
 				new_item_object['precioUnitario'] = str('%.2f' % round(item.price_unit, 2))
-				new_item_object['precioUnitarioDescuento'] = str('%.2f' % round(item.price_unit - float(precioDescuento, 2)))
+				new_item_object['precioUnitarioDescuento'] = str('%.2f' % round(item.price_unit - float(precioDescuento),2))
 				new_item_object['precioItem'] = str('%.2f' % round((item.quantity * (item.price_unit - float(precioDescuento))), 2))
 				new_item_object['valorTotal'] = str('%.2f' % round((((item.quantity * (item.price_unit - float(precioDescuento))) + ((item.price_subtotal * monto_porcentaje)/100))), 2))
 				new_item_object['codigoGTIN'] = str("")
