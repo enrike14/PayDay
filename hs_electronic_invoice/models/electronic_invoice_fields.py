@@ -239,8 +239,8 @@ class electronic_invoice_fields(models.Model):
 
 	def llamar_ebi_pac(self):
 		invoice_number = '000001'
-		user_name = ''
-		user_email = ''
+		# user_name = ''
+		# user_email = ''
 		monto_total = ''
 		dictsItems = {}
 		info_items_array = []
@@ -253,8 +253,8 @@ class electronic_invoice_fields(models.Model):
 			monto_sin_impuesto = record.amount_untaxed
 			grupo_monto_impuestos = record.amount_by_group
 			monto_total_factura = record.amount_total
-			user_name = record.partner_id.name
-			user_email = record.partner_id.email
+			# user_name = record.partner_id.name
+			# user_email = record.partner_id.email
 			lines_ids = record.invoice_line_ids
 
 			ids_str = str(lines_ids).replace("account.move.line",
@@ -304,7 +304,7 @@ class electronic_invoice_fields(models.Model):
 		cliente = zeep.Client(wsdl=wsdl)
 		# get the client dict
 		# TODO: send more parameters example: ruc, pais, razon...
-		clienteDict = self.set_cliente_dict(user_name, user_email)
+		clienteDict = self.set_cliente_dict()
 		# get the subtotales dict
 		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo)
 		lista_forma_pago_dict = dict(formaPago=info_pagos)
@@ -733,6 +733,8 @@ class electronic_invoice_fields(models.Model):
 					tasaITBMS = "00"
 					monto_porcentaje = 0
 
+				logging.info("Descuento:"+ str(item.discount))
+
 				new_item_object = {}
 				new_item_object['descripcion'] = str(item.name)
 				new_item_object['cantidad'] = str(
@@ -798,17 +800,16 @@ class electronic_invoice_fields(models.Model):
 		return array_pagos
 
 
-	def set_cliente_dict(self, user_name, user_email):
-		logging.info('Pais del cliente: ' +
-					str(self.partner_id.country_id.code))
+	def set_cliente_dict(self):
+
 		tipo_cliente_fe = self.partner_id.TipoClienteFE #'02'
 		tipo_contribuyente = self.partner_id.tipoContribuyente #Juridico
 		client_obj = {
 			"tipoClienteFE" : tipo_cliente_fe, #reemplazar por TipoclienteFE desde res.partner
 			"tipoContribuyente": tipo_contribuyente,
 			"numeroRUC" : self.partner_id.numeroRUC,
-			"pais": "PA",
-			"correoElectronico1" : user_email,
+			"pais": self.partner_id.country_id.code,
+			"correoElectronico1" : self.partner_id.email,
 			# "razonSocial" : user_name
 		}
 		# check if TipoClienteFE is 01/03
