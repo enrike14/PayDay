@@ -307,7 +307,7 @@ class electronic_invoice_fields(models.Model):
 		clienteDict = self.set_cliente_dict(user_name, user_email)
 		# get the subtotales dict
 		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo)
-		lista_forma_pago_dict = dict(formaPago=info_pagos),
+		lista_forma_pago_dict = dict(formaPago=info_pagos)
 		retencion_dict = {
 					'codigoRetencion': "2",
 					'montoRetencion':  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
