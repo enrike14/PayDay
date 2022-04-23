@@ -828,9 +828,13 @@ class electronic_invoice_fields(models.Model):
 
 	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,grupo_monto_impuestos):
 		logging.info('Monto de Impuestos: ' + str(grupo_monto_impuestos))
+
+		tuple_impuesto_completo = grupo_monto_impuestos[0]
+		monto_impuesto_completo = tuple_impuesto_completo[1]
+
 		subTotalesDict = {}
 		subTotalesDict['totalPrecioNeto'] = str('%.2f' % round(monto_sin_impuesto, 2))
-		subTotalesDict['totalITBMS'] = str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+		subTotalesDict['totalITBMS'] = str('%.2f' % round(monto_impuesto_completo, 2)) #str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
 		subTotalesDict['totalMontoGravado'] = str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
 		subTotalesDict['totalDescuento'] = ""
 		subTotalesDict['totalAcarreoCobrado'] = ""
