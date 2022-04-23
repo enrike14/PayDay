@@ -306,8 +306,8 @@ class electronic_invoice_fields(models.Model):
 			monto_sin_impuesto, monto_total_factura, cantidad_items, grupo_monto_impuestos)
 
 		retencion_dict = {
-					'codigoRetencion': "2",  #str('%.2f' % round(monto_total_factura, 2))
-					'totalTodosItems':  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))#str('%.2f' % round(monto_total_factura, 2))
+					'codigoRetencion': "2",
+					'totalTodosItems':  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
 				}
 
 
@@ -322,7 +322,9 @@ class electronic_invoice_fields(models.Model):
 				listaItems=dict(
 					item=info_items_array
 				),
-				retencion=dict(retencion_dict),
+				codigoRetencion= "2",
+				totalTodosItems=  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2)),
+				# retencion=dict(retencion_dict),
 				totalesSubTotales=dict(subTotalesDict,
 								listaFormaPago=dict(
 									formaPago=info_pagos
