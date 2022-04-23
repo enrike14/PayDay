@@ -801,33 +801,33 @@ class electronic_invoice_fields(models.Model):
 
 	def set_cliente_dict(self, user_name, user_email):
 		logging.info('Pais del cliente: ' +
-					 str(self.partner_id.country_id.code))
+					str(self.partner_id.country_id.code))
 		tipo_cliente_fe = '02'
 		tipo_contribuyente = 1  # Juridico
 		client_obj = {
-			"tipoClienteFE": tipo_cliente_fe,  # reemplazar por TipoclienteFE desde res.partner
+			"tipoClienteFE" : tipo_cliente_fe, #reemplazar por TipoclienteFE desde res.partner
 			"tipoContribuyente": tipo_contribuyente,
-			"numeroRUC": "8792965",
+			"numeroRUC" : self.partner_id.numeroRUC,
 			"pais": "PA",
-			"correoElectronico1": user_email,
-			"razonSocial": user_name
+			"correoElectronico1" : user_email,
+			# "razonSocial" : user_name
 		}
 		# check if TipoClienteFE is 01/03
 		if tipo_cliente_fe in ('01', '03'):
-			client_obj['digitoVerificadorRUC'] = '42'  # viene de res.partner
-			client_obj['razonSocial'] = 'test razón social'
-			client_obj['direccion'] = 'Urbanización, Calle, Casa, Número de Local'
-			client_obj['codigoUbicacion'] = '8-8-8'
-			client_obj['provincia'] = '8'
-			client_obj['distrito'] = '8'
-			client_obj['corregimiento'] = '8'
+			client_obj['digitoVerificadorRUC'] = self.partner_id.digitoVerificadorRUC #viene de res.partner
+			client_obj['razonSocial']          = self.partner_id.razonSocial #'test razón social'
+			client_obj['direccion']            = self.partner_id.direccion #'Urbanización, Calle, Casa, Número de Local'
+			client_obj['codigoUbicacion']      = self.partner_id.CodigoUbicacion #'8-8-8'
+			client_obj['provincia']            = self.partner_id.provincia #'8'
+			client_obj['distrito']             = self.partner_id.distrito #'8'
+			client_obj['corregimiento']        = self.partner_id.corregimiento #'8'
 
 		if tipo_cliente_fe in ('04'):
-			tipoIdentificacion = '01'
-			client_obj['tipoIdentificacion'] = '01'
-			client_obj['nroIdentificacionExtranjero'] = 'Número de Pasaporte o Número de Identificación Tributaria Extranjera'
+			tipoIdentificacion =  self.partner_id.tipoIdentificacion#'01'
+			client_obj['tipoIdentificacion'] = tipoIdentificacion#'01'
+			client_obj['nroIdentificacionExtranjero'] = self.partner_id.nroIdentificacionExtranjero#'Número de Pasaporte o Número de Identificación Tributaria Extranjera' 
 			if tipoIdentificacion == '01':
-				client_obj['paisExtranjero'] = 'Utilizar nombre completo del país.'
+				client_obj['paisExtranjero'] = self.partner_id.paisExtranjero#'Utilizar nombre completo del país.'
 
 		return client_obj
 
