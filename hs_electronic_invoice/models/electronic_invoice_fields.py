@@ -325,7 +325,7 @@ class electronic_invoice_fields(models.Model):
 
 		logging.info("Total =" + str('%.2f' % round(self.total_precio_descuento, 2)))
 		descuentoBonificacion_dict = dict(
-			DescDescuento="Descuentos aplicados a los productos",
+			descDescuento="Descuentos aplicados a los productos",
 			montoDescuento=str('%.2f' % round(self.total_precio_descuento, 2))
 		)
 
