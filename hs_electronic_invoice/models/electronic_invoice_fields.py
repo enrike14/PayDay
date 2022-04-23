@@ -323,13 +323,16 @@ class electronic_invoice_fields(models.Model):
 					item=info_items_array
 				),
 				# retencion=dict(retencion_dict),
-				totalesSubTotales=dict(subTotalesDict,
+				totalesSubTotales=dict(
+								subTotalesDict,
 								listaFormaPago=dict(
 									formaPago=info_pagos
 								),
-								codigoRetencion= "2",
-								totalTodosItems=  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2)),
+								retencion = dict(
+									codigoRetencion= "2",
+									totalTodosItems=  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2)),
 								)
+				)
 			)
 		)
 		# datos del EBI Completos
