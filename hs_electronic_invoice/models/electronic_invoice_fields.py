@@ -274,8 +274,7 @@ class electronic_invoice_fields(models.Model):
 			# set the invoice_items length
 			cantidad_items = len(invoice_items)
 			# Send the array of items and build the array of objects
-			info_items_array = self.set_array_item_object(
-				invoice_items)  # return array of items objects
+			info_items_array = self.set_array_item_object(invoice_items)  # return array of items objects
 
 		payments_items = self.env["account.payment"].search(
 			[('communication', '=', self.name)])
@@ -306,7 +305,7 @@ class electronic_invoice_fields(models.Model):
 		# TODO: send more parameters example: ruc, pais, razon...
 		clienteDict = self.set_cliente_dict()
 		# get the subtotales dict
-		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo)
+		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo, info_items_array)
 		lista_forma_pago_dict = dict(formaPago=info_pagos)
 		retencion_dict = {
 					'codigoRetencion': "2",
@@ -734,25 +733,27 @@ class electronic_invoice_fields(models.Model):
 					monto_porcentaje = 0
 
 				logging.info("Descuento:"+ str(item.discount))
+				precioDescuento = '0'
+				if item.discount > 0:
+					precioDescuento = str((float(item.price_unit) * float(item.discount)) / 100)
+
 
 				new_item_object = {}
 				new_item_object['descripcion'] = str(item.name)
 				new_item_object['cantidad'] = str(
 					'%.2f' % round(item.quantity, 2))
-				new_item_object['precioUnitario'] = str(
-					'%.2f' % round(item.price_unit, 2))
+				new_item_object['precioUnitario'] = str('%.2f' % round(item.price_unit, 2))
+				new_item_object['precioUnitarioDescuento'] = precioDescuento
 				new_item_object['precioItem'] = str(
 					'%.2f' % round((item.quantity * item.price_unit), 2))
-				new_item_object['valorTotal'] = str('%.2f' % round(
-					(((item.quantity * item.price_unit) + ((item.price_subtotal * monto_porcentaje)/100)) - item.discount), 2))
+				new_item_object['valorTotal'] = str('%.2f' % round((((item.quantity * item.price_unit) + ((item.price_subtotal * monto_porcentaje)/100))), 2))
 				new_item_object['codigoGTIN'] = str("")
 				new_item_object['cantGTINCom'] = str("")
-				new_item_object['codigoGTINInv'] = str(
-					item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else ''
+				new_item_object['codigoGTINInv'] = str(item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else ''
 				new_item_object['tasaITBMS'] = str(tasaITBMS)
-				new_item_object['valorITBMS'] = str('%.2f' % round(
-					(item.price_subtotal * monto_porcentaje)/100, 2))
+				new_item_object['valorITBMS'] = str('%.2f' % round((item.price_subtotal * monto_porcentaje)/100, 2))
 				new_item_object['cantGTINComInv'] = str("")
+	
 				if item.product_id.categoryProduct == 'Materia prima Farmacéutica' or item.product_id.categoryProduct == 'Medicina' or item.product_id.categoryProduct == 'Alimento':
 					new_item_object['fechaFabricacion'] = str(
 						item.fechaFabricacion.strftime("%Y-%m-%dT%I:%M:%S-05:00"))
@@ -832,7 +833,11 @@ class electronic_invoice_fields(models.Model):
 		return client_obj
 
 
-	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo):
+	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array):
+
+		total_descuento = 0.0
+		for item in info_items_array:
+			total_descuento += float(item.precioUnitarioDescuento)
 
 
 		subTotalesDict = {}
@@ -850,4 +855,7 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict['nroItems'] = str(cantidad_items)
 		subTotalesDict['totalTodosItems'] = str('%.2f' % round((monto_sin_impuesto + monto_impuesto_completo), 2)) #str('%.2f' % round(monto_total_factura, 2))
 
+		if(total_descuento > 0):
+			subTotalesDict['totalDescuento'] = total_descuento
+		
 		return subTotalesDict
