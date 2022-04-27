@@ -332,7 +332,7 @@ class electronic_invoice_fields(models.Model):
 		if(self.total_precio_descuento > 0):
 			totales_subtotales_inv_dict["listaDescBonificacion"] = [descuentoBonificacion_dict]
 
-
+		logging.info("Total objeto" + str(totales_subtotales_inv_dict))
 		datos = dict(
 			tokenEmpresa=tokenEmpresa,
 			tokenPassword=tokenPassword,
