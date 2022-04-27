@@ -851,7 +851,7 @@ class electronic_invoice_fields(models.Model):
 
 		total_todos_items = 0.0
 		for item in info_items_array:
-			total_todos_items += float(item['valotTotal'])
+			total_todos_items += float(item['valorTotal'])
 
 
 		subTotalesDict = {}
