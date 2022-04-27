@@ -807,7 +807,7 @@ class electronic_invoice_fields(models.Model):
 			nuevo_diccionario2['formaPagoFact'] = "01"
 			nuevo_diccionario2['descFormaPago'] = ""
 			nuevo_diccionario2['valorCuotaPagada'] = str(
-				'%.2f' % round(float(self.amount_untaxed + monto_impuesto_completo), 2))
+				'%.2f' % round(float((self.amount_untaxed + monto_impuesto_completo)-self.total_precio_descuento), 2))
 			array_pagos.append(nuevo_diccionario2)
 
 		logging.info('Montos de Pagos: ' + str(array_pagos))
