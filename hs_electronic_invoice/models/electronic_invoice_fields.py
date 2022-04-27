@@ -325,8 +325,10 @@ class electronic_invoice_fields(models.Model):
 
 		logging.info("Total =" + str('%.2f' % round(self.total_precio_descuento, 2)))
 		descuentoBonificacion_dict = dict(
-			descDescuento="Descuentos aplicados a los productos",
-			montoDescuento=str('%.2f' % round(self.total_precio_descuento, 2))
+			descuentoBonificacion = {
+				"descDescuento":"Descuentos aplicados a los productos",
+				"montoDescuento":str('%.2f' % round(self.total_precio_descuento, 2))
+			}
 		)
 
 		if(self.total_precio_descuento > 0):
@@ -860,12 +862,12 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict['totalDescuento'] = ""
 		subTotalesDict['totalAcarreoCobrado'] = ""
 		subTotalesDict['valorSeguroCobrado'] = ""
-		subTotalesDict['totalFactura'] =str('%.2f' % round((monto_sin_impuesto + monto_impuesto_completo), 2))  #str('%.2f' % round(monto_total_factura, 2))
-		subTotalesDict['totalValorRecibido'] = str('%.2f' % round((monto_sin_impuesto + monto_impuesto_completo), 2)) #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalFactura'] =str('%.2f' % round(((monto_sin_impuesto + monto_impuesto_completo) - self.total_precio_descuento), 2))  #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalValorRecibido'] = str('%.2f' % round(((monto_sin_impuesto + monto_impuesto_completo) - self.total_precio_descuento), 2)) #str('%.2f' % round(monto_total_factura, 2))
 		subTotalesDict['vuelto'] = "0.00"
 		subTotalesDict['tiempoPago'] = "1"
 		subTotalesDict['nroItems'] = str(cantidad_items)
-		subTotalesDict['totalTodosItems'] = str('%.2f' % round((monto_sin_impuesto + monto_impuesto_completo), 2)) #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalTodosItems'] = str('%.2f' % round(((monto_sin_impuesto + monto_impuesto_completo) - self.total_precio_descuento), 2)) #str('%.2f' % round(monto_total_factura, 2))
 
 		if(self.total_precio_descuento > 0):
 			subTotalesDict['totalDescuento'] = str('%.2f' % round(self.total_precio_descuento, 2))
