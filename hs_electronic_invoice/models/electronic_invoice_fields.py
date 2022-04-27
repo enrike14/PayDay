@@ -849,9 +849,9 @@ class electronic_invoice_fields(models.Model):
 	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array):
 		logging.info("Array items: " + str(info_items_array))
 
-		# total_descuento = 0.0
-		# for item in info_items_array:
-		# 	total_descuento += float(item['precioUnitarioDescuento'])
+		total_todos_items = 0.0
+		for item in info_items_array:
+			total_todos_items += float(item['valorCuotaPagada'])
 
 
 		subTotalesDict = {}
@@ -867,7 +867,7 @@ class electronic_invoice_fields(models.Model):
 		subTotalesDict['vuelto'] = "0.00"
 		subTotalesDict['tiempoPago'] = "1"
 		subTotalesDict['nroItems'] = str(cantidad_items)
-		subTotalesDict['totalTodosItems'] = str('%.2f' % round(((monto_sin_impuesto + monto_impuesto_completo) - self.total_precio_descuento), 2)) #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalTodosItems'] = str('%.2f' % round(total_todos_items, 2)) #str('%.2f' % round(monto_total_factura, 2))
 
 		if(self.total_precio_descuento > 0):
 			subTotalesDict['totalDescuento'] = str('%.2f' % round(self.total_precio_descuento, 2))
