@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="electronic_invoice_cpbs_list">
+      <field name="name">electronic.invoice.cpbs.list</field>
+      <field name="model">electronic.invoice.cpbs</field>
+      <field name="arch" type="xml">
+        <tree>
+              <field name="segmento" />
+              <field name="familia" />
+        </tree>
+      </field>
+    </record>
+    
+    <!-- VISTA DE FORMULARIO eeee1111e-->
+
+    <record id="electronic_invoice_cpbs_form" model="ir.ui.view">
+      <field name="name">electronic.invoice.cpbs.form</field>
+      <field name="model">electronic.invoice.cpbs</field>
+      <field name="arch" type="xml">
+      
+        <form string="CuentasBank">
+          <sheet>
+            <div><h1>Dastos de Facturas Electrónicas</h1></div>
+            <div><h6>Ínformación brindada por la DGI.</h6></div>
+            <br></br>
+            <group>
+               <field name="segmento" />
+              <field name="familia" />
+            </group>
+          </sheet>
+        </form>
+
+
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="electronic_invoice_cpbs_action_window">
+      <field name="name">Registros - Factura Electrónica</field>
+      <field name="res_model">electronic.invoice.cpbs</field>
+      <field name="view_mode">tree,form</field>
+  </record>
+
+  <!-- Top menu item -->
+
+  <!--<menuitem id="electronic_invoice_menu_root" name="Factura Electrónica" sequence="3" parent="account.menu_finance_configuration"/>-->
+  <!-- menu categories -->
+  <menuitem id="electronic_invoice_menu_4" name="Codificación Panameña de Bienes y Servicios de Segmentos y Familias"  parent="electronic_invoice_menu_root" sequence="4" action="electronic_invoice_cpbs_action_window"/>
+  <!-- <menuitem id="report_reconciliation_menu" name="Reporte Conciliación"  parent="bank_reconciliation_menu_root" sequence="2" action="bank_reconciliation_action_window"/> -->
+
+  </data>
+</odoo>

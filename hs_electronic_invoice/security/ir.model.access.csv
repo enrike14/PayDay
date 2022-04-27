@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_electronic_invoice,access.electronic.invoice,model_electronic_invoice,base.group_user,1,1,1,1
 access_electronic_invoice_logs,access.electronic.invoice.logs,model_electronic_invoice_logs,base.group_user,1,1,1,1
 access_electronic_invoice_moves,access.electronic.invoice.moves,model_electronic_invoice_moves,base.group_user,1,1,1,1
+access_electronic_invoice_cpbs,access.electronic.invoice.cpbs,model_electronic_invoice_cpbs,base.group_user,1,1,1,1
