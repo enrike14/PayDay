@@ -305,7 +305,7 @@ class electronic_invoice_fields(models.Model):
 		# TODO: send more parameters example: ruc, pais, razon...
 		clienteDict = self.set_cliente_dict()
 		# get the subtotales dict
-		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo, info_items_array)
+		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo, info_items_array, info_pagos)
 		lista_forma_pago_dict = dict(formaPago=info_pagos)
 		retencion_dict = {
 					'codigoRetencion': "2",
@@ -846,11 +846,11 @@ class electronic_invoice_fields(models.Model):
 		return client_obj
 
 
-	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array):
-		logging.info("Array items: " + str(info_items_array))
+	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array, info_pagos):
+		# logging.info("Array items: " + str(info_items_array))
 
 		total_todos_items = 0.0
-		for item in info_items_array:
+		for item in info_pagos:
 			total_todos_items += float(item['valorCuotaPagada'])
 
 
