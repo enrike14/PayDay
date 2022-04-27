@@ -850,8 +850,8 @@ class electronic_invoice_fields(models.Model):
 		# logging.info("Array items: " + str(info_items_array))
 
 		total_todos_items = 0.0
-		for item in info_pagos:
-			total_todos_items += float(item['valorCuotaPagada'])
+		for item in info_items_array:
+			total_todos_items += float(item['valotTotal'])
 
 
 		subTotalesDict = {}
