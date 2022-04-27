@@ -724,7 +724,7 @@ class electronic_invoice_fields(models.Model):
 					'precioItem' : str('%.2f' % round((item.quantity * item.price_unit), 2)),
 					'valorTotal' : str('%.2f' % round((((item.quantity * item.price_unit) + ((item.price_unit * monto_porcentaje)/100)) - item.discount), 2)),
 					'codigoGTIN' :  str(item.product_id.codigoGTIN) if item.product_id.codigoGTIN else '',
-					'cantGTINCom' : str(1) if item.product_id.codigoGTIN else '',
+					'cantGTINCom' : 1 if item.product_id.codigoGTIN else '',
 					#'codigoGTINInv' : "",
 					'codigoGTINInv' : str(item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else '',
 					'tasaITBMS' : str(tasaITBMS),
