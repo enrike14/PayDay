@@ -22,6 +22,7 @@
         "views/views.xml",
         "views/views_fe_moves.xml",
         "views/views_fe_logs.xml",
+         "views/views_fe_cpbs.xml",
         "views/fe_invoice.xml",
         "views/templates.xml",
         "views/views_product_field.xml",
