@@ -10,8 +10,7 @@ class product_field(models.Model):
 	mensaje_codigo='Codigos tipo:\nGTIN – 14 (14 caracteres)\nGTIN – 13 (13 caracteres)\nGTIN – 12 (12 caracteres)\nGTIN – 8 (8 caracteres)'
 	#asignar campos al modulo de product.product
 	categoryProduct = fields.Selection(
-	[('Sin Categoría', 'Sin Categoría'),
-	('Materia prima Farmacéutica', 'Materia prima Farmacéutica'),
+	[('Materia prima Farmacéutica', 'Materia prima Farmacéutica'),
 	('Medicina', 'Medicina'),
 	('Alimento', 'Alimento')],string = 'Categoría del Producto')
 	fechaFabricacion = fields.Date(string='Fecha de Fabricación')
@@ -21,4 +20,13 @@ class product_field(models.Model):
 	unidadMedidaCPBS = fields.Char(string="Unidad de Medida CPBS")
 	codigoGTIN = fields.Char(string="Código GTIN",size=14,help=mensaje_codigo)
 	codigoGTINInv = fields.Char(string="Código GTIN para la unidad de inventario",size=14,help=mensaje_codigo)
+	tasaISC = fields.Float(string="Tasa ISC")
+	valorISC = fields.Float(string="Valor ISC")
+	tasaOTI = fields.Selection(
+	[('01', 'SUME 911'),
+	('02', 'Tasa Portabilidad Numérica'),
+	('03', 'Impuesto sobre seguro')],string = 'Tasa OTI')
+	valorTasa = fields.Float(string="Valor Tasa")
+	CantGTINCom = fields.Float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización")
+	cantGTINComInv = fields.Float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización (Inventario)")
 	
