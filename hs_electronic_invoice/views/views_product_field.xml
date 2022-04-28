@@ -21,7 +21,7 @@
 									<field name="codigoCPBS" />
 									<field name="unidadMedidaCPBS"/>
 									<field name="codigoGTIN"/>
-									 <field name="CantGTINCom" attrs="{'invisible':[('tipo_emision_fe','=','')]}"/>
+									 <field name="CantGTINCom" attrs="{'invisible':[('codigoGTIN','=','')]}"/>
 									<field name="codigoGTINInv"/>
 									<field name="tasaISC"/>
 									<field name="valorISC"/>
