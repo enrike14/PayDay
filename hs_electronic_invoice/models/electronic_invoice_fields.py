@@ -316,7 +316,7 @@ class electronic_invoice_fields(models.Model):
 
 		totales_subtotales_inv_dict = dict(
 			subTotalesDict,
-			listaFormaPago=lista_forma_pago_dict
+			listaFormaPago=lista_forma_pago_dict,
 			listaTotalOTI=info_items_array_oti
 		)
 
