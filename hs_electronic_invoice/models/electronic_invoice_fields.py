@@ -724,12 +724,12 @@ class electronic_invoice_fields(models.Model):
 					'precioItem' : str('%.2f' % round((item.quantity * item.price_unit), 2)),
 					'valorTotal' : str('%.2f' % round((((item.quantity * item.price_unit) + ((item.price_unit * monto_porcentaje)/100)) - item.discount), 2)),
 					'codigoGTIN' :  str(item.product_id.codigoGTIN) if item.product_id.codigoGTIN else '',
-					'cantGTINCom' : str('%.2f' % round(float(1.00), 2)) if item.product_id.codigoGTIN else '',
+					'cantGTINCom' : str('%.2f' % round(float(item.product_id.CantGTINCom), 2)) if item.product_id.codigoGTIN else '',
 					#'codigoGTINInv' : "",
 					'codigoGTINInv' : str(item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else '',
 					'tasaITBMS' : str(tasaITBMS),
 					'valorITBMS' : str('%.2f' % round((item.price_unit * monto_porcentaje)/100, 2)),
-					'cantGTINComInv' : str('%.2f' % round(float(1.00), 2)) if item.product_id.codigoGTINInv else ''
+					'cantGTINComInv' : str('%.2f' % round(float(item.product_id.cantGTINComInv), 2)) if item.product_id.codigoGTINInv else ''
 					}
 				if item.product_id.categoryProduct=='Materia prima Farmacéutica' or item.product_id.categoryProduct=='Medicina' or item.product_id.categoryProduct=='Alimento':
 					new_item_object['fechaFabricacion'] =  str(item.product_id.fechaFabricacion.strftime("%Y-%m-%d"))
@@ -740,7 +740,7 @@ class electronic_invoice_fields(models.Model):
 					new_item_object["CodigoCPBSAbrev"]=str(item.product_id.codigoCPBSAbrev)
 				if item.product_id.tasaISC:
 					new_item_object["TasaISC"]=str(item.product_id.tasaISC)
-					new_item_object["ValorISC"]=str(item.product_id.valorISC)
+					new_item_object["ValorISC"]=str('%.2f' % round(float(item.product_id.valorISC), 2)) 
 
 				if item.product_id.tasaOTI:
 					listaTasaOTI=dict(oti={
