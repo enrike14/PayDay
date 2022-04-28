@@ -738,7 +738,9 @@ class electronic_invoice_fields(models.Model):
 				if typeCustomers=="03":
 					new_item_object["CodigoCPBS"]=str(item.product_id.codigoCPBS)
 					new_item_object["CodigoCPBSAbrev"]=str(item.product_id.codigoCPBSAbrev)
-
+				if item.product_id.tasaISC:
+					new_item_object["TasaISC"]=str(item.product_id.tasaISC)
+					new_item_object["ValorISC"]=str(item.product_id.valorISC)
 				array_items.append(new_item_object)
 		logging.info("Product info" + str(array_items))
 		return array_items
