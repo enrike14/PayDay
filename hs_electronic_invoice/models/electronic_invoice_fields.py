@@ -730,14 +730,23 @@ class electronic_invoice_fields(models.Model):
 				else:
 					tasaITBMS = "00"
 					monto_porcentaje = 0
+				
+				precioDescuento = '0'
+				if item.discount > 0:
+					precioDescuento = str((float(item.price_unit) * float(item.discount)) / 100)
+
+				logging.info("Descuento:"+ str(precioDescuento))
+				self.total_precio_descuento += float(precioDescuento)
+				
 				new_item_object = {
 					'descripcion' : str(item.product_id.name),
 					'cantidad' : str('%.2f' % round(item.quantity, 2)),
 					'precioUnitario' : str('%.2f' % round(item.price_unit, 2)),
-					'precioItem' : str('%.2f' % round((item.quantity * item.price_unit), 2)),
-					'valorTotal' : str('%.2f' % round((((item.quantity * item.price_unit) + ((item.price_unit * monto_porcentaje)/100)) - item.discount), 2)),
+					'precioUnitarioDescuento' : str('%.2f' % round(float(precioDescuento), 2)),
+					'precioItem' : str('%.2f' % round((item.quantity * (item.price_unit - float(precioDescuento))), 2)),
+					'valorTotal' : str('%.2f' % round((((item.quantity * (item.price_unit - float(precioDescuento))) + ((item.price_subtotal * monto_porcentaje)/100))), 2)),
 					'codigoGTIN' :  str(item.product_id.codigoGTIN) if item.product_id.codigoGTIN else '',
-					'cantGTINCom' : str('%.2f' % round(float(item.product_id.CantGTINCom), 2)) if item.product_id.codigoGTIN else '',
+					'cantGTINCom' : str('%.2f' % round(float(item.product_id.cantGTINCom), 2)) if item.product_id.codigoGTIN else '',
 					#'codigoGTINInv' : "",
 					'codigoGTINInv' : str(item.product_id.codigoGTINInv) if item.product_id.codigoGTINInv else '',
 					'tasaITBMS' : str(tasaITBMS),
@@ -750,10 +759,23 @@ class electronic_invoice_fields(models.Model):
 					
 				if typeCustomers=="03":
 					new_item_object["CodigoCPBS"]=str(item.product_id.codigoCPBS)
-					new_item_object["CodigoCPBSAbrev"]=str(item.product_id.codigoCPBSAbrev)
 				if item.product_id.tasaISC:
 					new_item_object["TasaISC"]=str(item.product_id.tasaISC)
-					new_item_object["ValorISC"]=str('%.2f' % round(float(item.product_id.valorISC), 2)) 
+					new_item_object["ValorISC"]=str('%.2f' % round(float(item.product_id.valorISC), 2))
+				if item.product_id.default_code:
+					new_item_object["Código"]=str(item.product_id.default_code)
+				if item.product_id.codigoCPBSAbrev:
+					new_item_object["CodigoCPBSAbrev"]=str(item.product_id.codigoCPBSAbrev)	
+				if item.product_id.unidadMedida:
+					new_item_object["UnidadMedida"]=str(item.product_id.unidadMedida)
+				if item.product_id.unidadMedidaCPBS:
+					new_item_object["UnidadMedidaCPBS"]=str(item.product_id.unidadMedidaCPBS)	
+				if item.product_id.precioAcarreo:
+					new_item_object["PrecioAcarreo"]=str(item.product_id.precioAcarreo)
+				if item.product_id.precioSeguro:
+					new_item_object["PrecioSeguro"]=str(item.product_id.precioSeguro)
+				if item.product_id.infoItem:
+					new_item_object["InfoItem"]=str(item.product_id.infoItem)
 
 				if item.product_id.tasaOTI:
 					listaTasaOTI=dict(oti={
