@@ -275,7 +275,8 @@ class electronic_invoice_fields(models.Model):
 			cantidad_items = len(invoice_items)
 			# Send the array of items and build the array of objects
 			info_items_array = self.set_array_item_object(
-				invoice_items)  # return array of items objects
+				invoice_items)
+				# return array of items objects
 
 		payments_items = self.env["account.payment"].search(
 			[('communication', '=', self.name)])
