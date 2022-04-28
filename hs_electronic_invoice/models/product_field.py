@@ -21,4 +21,8 @@ class product_field(models.Model):
 	unidadMedidaCPBS = fields.Char(string="Unidad de Medida CPBS")
 	codigoGTIN = fields.Char(string="Código GTIN",size=14,help=mensaje_codigo)
 	codigoGTINInv = fields.Char(string="Código GTIN para la unidad de inventario",size=14,help=mensaje_codigo)
-	
+	tasaISC = fields.Char(string="Tasa ISC")
+	valorISC = fields.Char(string="Valor ISC")
+	tasaOTI = fields.Char(string="Tasa OTI")
+	valorTasa = fields.Char(string="Valor Tasa")
+	CantGTINCom = fields.float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización")
