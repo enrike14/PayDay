@@ -736,7 +736,7 @@ class electronic_invoice_fields(models.Model):
 					precioDescuento = str((float(item.price_unit) * float(item.discount)) / 100)
 
 				logging.info("Descuento:"+ str(precioDescuento))
-				self.total_precio_descuento += float(precioDescuento)
+				#self.total_precio_descuento += float(precioDescuento)
 				
 				new_item_object = {
 					'descripcion' : str(item.product_id.name),
