@@ -247,7 +247,7 @@ class electronic_invoice_fields(models.Model):
 		lines_ids = ()
 		info_pagos = []
 		url_wsdl = ''
-		
+		info_items_array_oti=[]
 		for record in self:
 			invoice_number = record.name
 			monto_sin_impuesto = record.amount_untaxed
@@ -274,7 +274,9 @@ class electronic_invoice_fields(models.Model):
 			# set the invoice_items length
 			cantidad_items = len(invoice_items)
 			# Send the array of items and build the array of objects
-			info_items_array = self.set_array_item_object(invoice_items)  # return array of items objects
+			info_items_array = self.set_array_item_object(invoice_items) 
+			info_items_array_oti=self.set_array_item_object_oti(invoice_items)
+			 # return array of items objects
 
 		payments_items = self.env["account.payment"].search(
 			[('communication', '=', self.name)])
@@ -315,6 +317,7 @@ class electronic_invoice_fields(models.Model):
 		totales_subtotales_inv_dict = dict(
 			subTotalesDict,
 			listaFormaPago=lista_forma_pago_dict
+			listaTotalOTI=info_items_array_oti
 		)
 
 		if(len(grupo_monto_impuestos) > 1):
@@ -678,9 +681,9 @@ class electronic_invoice_fields(models.Model):
 		array_items_oti = []
 		if invoice_items:
 			for item in invoice_items:
-				listaTasaOTI=dict(oti={
-					"tasaOTI": item.product_id.tasaOTI,
-					"valorTasa": str('%.2f' % round(float(item.product_id.valorTasa), 2)) })
+				listaTasaOTI=dict(totalOti={
+					"codigoTotalOTI": item.product_id.tasaOTI,
+					"valorTotalOTI": str('%.2f' % round(float(item.product_id.valorTasa), 2)) })
 		
 				array_items_oti.append([listaTasaOTI])
 				logging.info("Product info" + str(array_items_oti))
