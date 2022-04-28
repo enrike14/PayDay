@@ -743,11 +743,10 @@ class electronic_invoice_fields(models.Model):
 					new_item_object["ValorISC"]=str(item.product_id.valorISC)
 
 				if item.product_id.tasaOTI:
-					listaTasaOTI=dict(listaItemOTI={
+					listaTasaOTI=dict(oti={
 						"tasaOTI": item.product_id.tasaOTI,
 						"valorTasa": item.product_id.valorTasa})
-					array_items.append(listaTasaOTI)
-					
+					new_item_object['listaItemOTI']=[listaTasaOTI];
 				array_items.append(new_item_object)
 		logging.info("Product info" + str(array_items))
 		return array_items
