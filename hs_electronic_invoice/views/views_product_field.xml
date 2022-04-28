@@ -28,7 +28,7 @@
 									<field name="tasaISC"/>
 									<field name="valorISC"/>
 									<field name="tasaOTI"/>
-									<field name="valorTasa"/>
+									<field name="valorTasa" attrs="{'required':[('tasaOTI','!=',False)]}"/>
                                 </group>
                             </group>
                         </page>
