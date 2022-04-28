@@ -762,8 +762,8 @@ class electronic_invoice_fields(models.Model):
 				if item.product_id.tasaISC:
 					new_item_object["TasaISC"]=str(item.product_id.tasaISC)
 					new_item_object["ValorISC"]=str('%.2f' % round(float(item.product_id.valorISC), 2))
-				if item.product_id.default_code:
-					new_item_object["Codigo"]=str(item.product_id.default_code)
+				#if item.product_id.default_code:
+					#new_item_object["Codigo"]=str(item.product_id.default_code)
 				if item.product_id.codigoCPBSAbrev:
 					new_item_object["CodigoCPBSAbrev"]=str(item.product_id.codigoCPBSAbrev)	
 				if item.product_id.unidadMedida:
@@ -774,8 +774,8 @@ class electronic_invoice_fields(models.Model):
 					new_item_object["PrecioAcarreo"]=str(item.product_id.precioAcarreo)
 				if item.product_id.precioSeguro:
 					new_item_object["PrecioSeguro"]=str(item.product_id.precioSeguro)
-				if item.product_id.infoItem:
-					new_item_object["InfoItem"]=str(item.product_id.infoItem)
+				#if item.product_id.infoItem:
+					#new_item_object["InfoItem"]=str(item.product_id.infoItem)
 
 				if item.product_id.tasaOTI:
 					listaTasaOTI=dict(oti={
