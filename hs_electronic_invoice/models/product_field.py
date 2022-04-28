@@ -25,4 +25,4 @@ class product_field(models.Model):
 	valorISC = fields.Char(string="Valor ISC")
 	tasaOTI = fields.Char(string="Tasa OTI")
 	valorTasa = fields.Char(string="Valor Tasa")
-	CantGTINCom = fields.float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización")
+	CantGTINCom = fields.Float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización")
