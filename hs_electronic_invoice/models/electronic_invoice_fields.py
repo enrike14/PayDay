@@ -674,6 +674,17 @@ class electronic_invoice_fields(models.Model):
 
 		return items
 
+	def set_array_item_object_oti(self, invoice_items):
+		array_items_oti = []
+		if invoice_items:
+			for item in invoice_items:
+				listaTasaOTI=dict(oti={
+					"tasaOTI": item.product_id.tasaOTI,
+					"valorTasa": str('%.2f' % round(float(item.product_id.valorTasa), 2)) })
+		
+				array_items_oti.append([listaTasaOTI])
+				logging.info("Product info" + str(array_items_oti))
+		return array_items_oti
 
 	def set_array_item_object(self, invoice_items):
 		typeCustomers = self.partner_id.TipoClienteFE
