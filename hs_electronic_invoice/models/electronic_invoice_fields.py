@@ -157,7 +157,7 @@ class electronic_invoice_fields(models.Model):
 	anulado = fields.Char(string='Anulado', readonly="True", store="True")
 	nota_credito = fields.Char(
 		string='Nota de Crédito', readonly="True", compute="on_change_type",)
-
+	total_precio_descuento = 0.0
 	@api.depends('qr_code')
 	def on_change_pago(self):
 		for record in self:
@@ -239,22 +239,22 @@ class electronic_invoice_fields(models.Model):
 
 	def llamar_ebi_pac(self):
 		invoice_number = '000001'
-		user_name = ''
-		user_email = ''
+		# user_name = ''
+		# user_email = ''
 		monto_total = ''
 		dictsItems = {}
 		info_items_array = []
 		lines_ids = ()
 		info_pagos = []
 		url_wsdl = ''
-
+		
 		for record in self:
 			invoice_number = record.name
 			monto_sin_impuesto = record.amount_untaxed
-			monto_impuestos = record.amount_by_group
+			grupo_monto_impuestos = record.amount_by_group
 			monto_total_factura = record.amount_total
-			user_name = record.partner_id.name
-			user_email = record.partner_id.email
+			# user_name = record.partner_id.name
+			# user_email = record.partner_id.email
 			lines_ids = record.invoice_line_ids
 
 			ids_str = str(lines_ids).replace("account.move.line",
@@ -274,15 +274,17 @@ class electronic_invoice_fields(models.Model):
 			# set the invoice_items length
 			cantidad_items = len(invoice_items)
 			# Send the array of items and build the array of objects
-			info_items_array = self.set_array_item_object(
-				invoice_items)
-				# return array of items objects
+			info_items_array = self.set_array_item_object(invoice_items)  # return array of items objects
 
 		payments_items = self.env["account.payment"].search(
 			[('communication', '=', self.name)])
 		logging.info("Los pagos en v13:" + str(payments_items))
+
+			
+		tuple_impuesto_completo = grupo_monto_impuestos[0]
+		monto_impuesto_completo = tuple_impuesto_completo[1]
 		# get an array to info_pagos
-		info_pagos = self.set_array_info_pagos(payments_items)
+		info_pagos = self.set_array_info_pagos(payments_items, monto_impuesto_completo)
 
 		# constultamos el objeto de nuestra configuración del servicio
 		config_document_obj = self.env["electronic.invoice"].search(
@@ -301,11 +303,38 @@ class electronic_invoice_fields(models.Model):
 		cliente = zeep.Client(wsdl=wsdl)
 		# get the client dict
 		# TODO: send more parameters example: ruc, pais, razon...
-		clienteDict = self.set_cliente_dict(user_name, user_email)
+		clienteDict = self.set_cliente_dict()
 		# get the subtotales dict
-		subTotalesDict = self.set_subtotales_dict(
-			monto_sin_impuesto, monto_total_factura, cantidad_items)
+		subTotalesDict = self.set_subtotales_dict(monto_sin_impuesto, monto_total_factura, cantidad_items, monto_impuesto_completo, info_items_array, info_pagos)
+		lista_forma_pago_dict = dict(formaPago=info_pagos)
+		retencion_dict = {
+					'codigoRetencion': "2",
+					'montoRetencion':  str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+				}
 
+		totales_subtotales_inv_dict = dict(
+			subTotalesDict,
+			listaFormaPago=lista_forma_pago_dict
+		)
+
+		if(len(grupo_monto_impuestos) > 1):
+			tuple_retencion = grupo_monto_impuestos[1]
+			if(float(tuple_retencion[1]) < 0 == True):
+				totales_subtotales_inv_dict["retencion"] = retencion_dict
+
+
+		logging.info("Total =" + str('%.2f' % round(self.total_precio_descuento, 2)))
+		descuentoBonificacion_dict = dict(
+			descuentoBonificacion = {
+				"descDescuento":"Descuentos aplicados a los productos",
+				"montoDescuento":str('%.2f' % round(self.total_precio_descuento, 2))
+			}
+		)
+
+		if(self.total_precio_descuento > 0):
+			totales_subtotales_inv_dict["listaDescBonificacion"] = [descuentoBonificacion_dict]
+
+		logging.info("Total objeto" + str(totales_subtotales_inv_dict))
 		datos = dict(
 			tokenEmpresa=tokenEmpresa,
 			tokenPassword=tokenPassword,
@@ -317,11 +346,7 @@ class electronic_invoice_fields(models.Model):
 				listaItems=dict(
 					item=info_items_array
 				),
-				totalesSubTotales=dict(subTotalesDict,
-									   listaFormaPago=dict(
-										   formaPago=info_pagos
-									   )
-									   )
+				totalesSubTotales=totales_subtotales_inv_dict
 			)
 		)
 		# datos del EBI Completos
@@ -745,14 +770,14 @@ class electronic_invoice_fields(models.Model):
 
 				if item.product_id.tasaOTI:
 					listaTasaOTI=dict(oti={
-						"tasaOTI": item.product_id.tasaOTI,
-						"valorTasa": str('%.2f' % round(float(item.product_id.valorTasa), 2)) })
+					"tasaOTI": item.product_id.tasaOTI,
+					"valorTasa": str('%.2f' % round(float(item.product_id.valorTasa), 2)) })
 					new_item_object['listaItemOTI']=[listaTasaOTI];
 				array_items.append(new_item_object)
 		logging.info("Product info" + str(array_items))
 		return array_items
 
-	def set_array_info_pagos(self, payments_items):
+	def set_array_info_pagos(self, payments_items, monto_impuesto_completo):
 		array_pagos = []
 		if payments_items:
 			for item in payments_items:
@@ -767,62 +792,69 @@ class electronic_invoice_fields(models.Model):
 			nuevo_diccionario2['formaPagoFact'] = "01"
 			nuevo_diccionario2['descFormaPago'] = ""
 			nuevo_diccionario2['valorCuotaPagada'] = str(
-				'%.2f' % round(float(self.amount_total), 2))
+				'%.2f' % round(float((self.amount_untaxed + monto_impuesto_completo)-self.total_precio_descuento), 2))
 			array_pagos.append(nuevo_diccionario2)
 
 		logging.info('Montos de Pagos: ' + str(array_pagos))
 		return array_pagos
 
-	def set_cliente_dict(self, user_name, user_email):
-		logging.info('Pais del cliente: ' +
-					 str(self.partner_id.country_id.code))
-		tipo_cliente_fe = '02'
-		tipo_contribuyente = 1  # Juridico
+
+	def set_cliente_dict(self):
+
+		tipo_cliente_fe = self.partner_id.TipoClienteFE #'02'
+		tipo_contribuyente = self.partner_id.tipoContribuyente #Juridico
 		client_obj = {
-			"tipoClienteFE": tipo_cliente_fe,  # reemplazar por TipoclienteFE desde res.partner
+			"tipoClienteFE" : tipo_cliente_fe, #reemplazar por TipoclienteFE desde res.partner
 			"tipoContribuyente": tipo_contribuyente,
-			"numeroRUC": "8792965",
-			"pais": "PA",
-			"correoElectronico1": user_email,
-			"razonSocial": user_name
+			"numeroRUC" : self.partner_id.numeroRUC,
+			"pais": self.partner_id.country_id.code,
+			"correoElectronico1" : self.partner_id.email,
+			# "razonSocial" : user_name
 		}
 		# check if TipoClienteFE is 01/03
 		if tipo_cliente_fe in ('01', '03'):
-			client_obj['digitoVerificadorRUC'] = '42'  # viene de res.partner
-			client_obj['razonSocial'] = 'test razón social'
-			client_obj['direccion'] = 'Urbanización, Calle, Casa, Número de Local'
-			client_obj['codigoUbicacion'] = '8-8-8'
-			client_obj['provincia'] = '8'
-			client_obj['distrito'] = '8'
-			client_obj['corregimiento'] = '8'
+			client_obj['digitoVerificadorRUC'] = self.partner_id.digitoVerificadorRUC #viene de res.partner
+			client_obj['razonSocial']          = self.partner_id.razonSocial #'test razón social'
+			client_obj['direccion']            = self.partner_id.direccion #'Urbanización, Calle, Casa, Número de Local'
+			client_obj['codigoUbicacion']      = self.partner_id.CodigoUbicacion #'8-8-8'
+			client_obj['provincia']            = self.partner_id.provincia #'8'
+			client_obj['distrito']             = self.partner_id.distrito #'8'
+			client_obj['corregimiento']        = self.partner_id.corregimiento #'8'
 
 		if tipo_cliente_fe in ('04'):
-			tipoIdentificacion = '01'
-			client_obj['tipoIdentificacion'] = '01'
-			client_obj['nroIdentificacionExtranjero'] = 'Número de Pasaporte o Número de Identificación Tributaria Extranjera'
+			tipoIdentificacion =  self.partner_id.tipoIdentificacion#'01'
+			client_obj['tipoIdentificacion'] = tipoIdentificacion#'01'
+			client_obj['nroIdentificacionExtranjero'] = self.partner_id.nroIdentificacionExtranjero#'Número de Pasaporte o Número de Identificación Tributaria Extranjera' 
 			if tipoIdentificacion == '01':
-				client_obj['paisExtranjero'] = 'Utilizar nombre completo del país.'
+				client_obj['paisExtranjero'] = self.partner_id.paisExtranjero#'Utilizar nombre completo del país.'
 
 		return client_obj
 
-	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items):
+
+	def set_subtotales_dict(self, monto_sin_impuesto, monto_total_factura, cantidad_items,monto_impuesto_completo, info_items_array, info_pagos):
+		# logging.info("Array items: " + str(info_items_array))
+
+		total_todos_items = 0.0
+		for item in info_items_array:
+			total_todos_items += float(item['valorTotal'])
+
+
 		subTotalesDict = {}
-		subTotalesDict['totalPrecioNeto'] = str(
-			'%.2f' % round(monto_sin_impuesto, 2))
-		subTotalesDict['totalITBMS'] = str('%.2f' % round(
-			(monto_total_factura - monto_sin_impuesto), 2))
-		subTotalesDict['totalMontoGravado'] = str(
-			'%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+		subTotalesDict['totalPrecioNeto'] = str('%.2f' % round(monto_sin_impuesto, 2))
+		subTotalesDict['totalITBMS'] = str('%.2f' % round(monto_impuesto_completo, 2)) #str('%.2f' % round((monto_total_factura - monto_sin_impuesto), 2))
+		# subTotalesDict['totalISC'] = #Suma de todas las ocurrencias de ValorISC.
+		subTotalesDict['totalMontoGravado'] = str('%.2f' % round(monto_impuesto_completo, 2)) #sumar TotalISC
 		subTotalesDict['totalDescuento'] = ""
 		subTotalesDict['totalAcarreoCobrado'] = ""
 		subTotalesDict['valorSeguroCobrado'] = ""
-		subTotalesDict['totalFactura'] = str(
-			'%.2f' % round(monto_total_factura, 2))
-		subTotalesDict['totalValorRecibido'] = str(
-			'%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalFactura'] =str('%.2f' % round(((monto_sin_impuesto + monto_impuesto_completo) - self.total_precio_descuento), 2))  #str('%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalValorRecibido'] = str('%.2f' % round(((monto_sin_impuesto + monto_impuesto_completo) - self.total_precio_descuento), 2)) #str('%.2f' % round(monto_total_factura, 2))
 		subTotalesDict['vuelto'] = "0.00"
 		subTotalesDict['tiempoPago'] = "1"
 		subTotalesDict['nroItems'] = str(cantidad_items)
-		subTotalesDict['totalTodosItems'] = str(
-			'%.2f' % round(monto_total_factura, 2))
+		subTotalesDict['totalTodosItems'] = str('%.2f' % round(total_todos_items, 2)) #str('%.2f' % round(monto_total_factura, 2))
+
+		if(self.total_precio_descuento > 0):
+			subTotalesDict['totalDescuento'] = str('%.2f' % round(self.total_precio_descuento, 2))
+		
 		return subTotalesDict
