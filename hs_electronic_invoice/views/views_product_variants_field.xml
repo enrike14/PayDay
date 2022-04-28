@@ -17,12 +17,16 @@
 									<field name="fechaCaducidad"/>
 									<field name="codigoCPBSAbrev"/>
 									<field name="codigoCPBS" />
-									<field name="unidadMedidaCPBS"/>
+									<field name="unidadMedida"/>
+									<field name="infoItem"/>
+									<field name="precioAcarreo"/>
+									<field name="precioSeguro"/>
                                 </group>
                                 <group>
+									<field name="unidadMedidaCPBS"/>
 									<field name="codigoGTIN"/>
 									 <!-- <field name="CantGTINCom" attrs="{'invisible':[('codigoGTIN','=','')]}"/> -->
-									 <field name="CantGTINCom"/>
+									 <field name="cantGTINCom"/>
 									<field name="codigoGTINInv"/>
 									<field name="cantGTINComInv"/>
 									<field name="tasaISC"/>

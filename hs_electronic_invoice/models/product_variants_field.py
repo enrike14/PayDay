@@ -27,6 +27,10 @@ class product_field(models.Model):
 	('02', 'Tasa Portabilidad Numérica'),
 	('03', 'Impuesto sobre seguro')],string = 'Tasa OTI')
 	valorTasa = fields.Float(string="Valor Tasa")
-	CantGTINCom = fields.Float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización")
+	cantGTINCom = fields.Float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización")
 	cantGTINComInv = fields.Float(string="	Cantidad del producto o servicio en el Código GTIN del ítem de comercialización (Inventario)")
+	unidadMedida=fields.Char(string="Unidad Medida")
+	infoItem=fields.Char(string="Información de interés del emisor con respeto a un ítem de la FE")
+	precioAcarreo = fields.Float(string="Precio Acarreo")
+	precioSeguro = fields.Float(string="Precio Seguro")
 	
