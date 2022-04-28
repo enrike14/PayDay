@@ -763,7 +763,7 @@ class electronic_invoice_fields(models.Model):
 					new_item_object["TasaISC"]=str(item.product_id.tasaISC)
 					new_item_object["ValorISC"]=str('%.2f' % round(float(item.product_id.valorISC), 2))
 				if item.product_id.default_code:
-					new_item_object["Código"]=str(item.product_id.default_code)
+					new_item_object["Codigo"]=str(item.product_id.default_code)
 				if item.product_id.codigoCPBSAbrev:
 					new_item_object["CodigoCPBSAbrev"]=str(item.product_id.codigoCPBSAbrev)	
 				if item.product_id.unidadMedida:
