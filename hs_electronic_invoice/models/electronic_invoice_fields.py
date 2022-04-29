@@ -771,7 +771,7 @@ class electronic_invoice_fields(models.Model):
 				if item.product_id.unidadMedida:
 					new_item_object["UnidadMedida"]=str(item.product_id.unidadMedida)
 				if item.product_id.unidadMedidaCPBS:
-					new_item_object["UnidadMedidaCPBS"]=str(item.product_id.unidadMedidaCPBS)	
+					new_item_object["unidadMedidaCPBS"]=str(item.product_id.unidadMedidaCPBS)	
 				if item.product_id.precioAcarreo:
 					new_item_object["PrecioAcarreo"]=str(item.product_id.precioAcarreo)
 				if item.product_id.precioSeguro:
