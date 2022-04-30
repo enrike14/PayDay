@@ -20,14 +20,10 @@ _logger = logging.getLogger(__name__)
 
 class electronic_invoice_fields(models.Model):
 	_inherit = "account.move"
-	lastFiscalNumber = fields.Char(
-		string="Número Fiscal", compute="on_change_state", readonly="True", store="True")
-	puntoFactFiscal = fields.Char(
-		string="Punto Facturación Fiscal", readonly="True")
-	pagadoCompleto = fields.Char(
-		string="Estado de Pago", compute="on_change_pago", readonly="True", store="True")
-	qr_code = fields.Binary("QR Factura Electrónica",
-							attachment=True, readonly="True")
+	lastFiscalNumber = fields.Char(string="Número Fiscal", compute="on_change_state", readonly="True", store="True")
+	puntoFactFiscal = fields.Char(string="Punto Facturación Fiscal", readonly="True")
+	pagadoCompleto = fields.Char(string="Estado de Pago", compute="on_change_pago", readonly="True", store="True")
+	qr_code = fields.Binary("QR Factura Electrónica",attachment=True, readonly="True")
 	tipo_documento_fe = fields.Selection(
 		string='Tipo de Documento',
 		selection=[
